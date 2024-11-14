@@ -1,0 +1,1 @@
+/*Javascript for the Rock Paper Scissors game*/
