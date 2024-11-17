@@ -1,6 +1,53 @@
+//Creating rock, paper, and scissors buttons in the DOM.
+const buttonRock = document.createElement("button");
+const buttonPaper = document.createElement("button");
+const buttonScissors = document.createElement("button");
+//Set the buttons ID's so we can identify which is clicked
+buttonRock.id = "rock";
+buttonPaper.id = "paper";
+buttonScissors.id = "scissors";
+//Add text to the buttons
+buttonRock.textContent = "Rock";
+buttonPaper.textContent = "Paper";
+buttonScissors.textContent = "Scissors";
+
+//Gets the body
+const body = document.body;
+
+//Allocates the buttons as children to the body of the HTML.
+body.appendChild(buttonRock);
+body.appendChild(buttonPaper);
+body.appendChild(buttonScissors);
+
+//Gets all of the buttons 
+const buttons = document.querySelectorAll("button");
+
+// we use the .forEach method to iterate through each button
+buttons.forEach((button) => {
+  // and for each one we add a 'click' listener
+  button.addEventListener("click", () => {
+    playRound(button.id, getComputerChoice());
+  });
+});
+
+//Create a div which will show the results and scores.
+const div = document.createElement("div");
+body.appendChild(div);
+
+//Create variables for holding the computer and player scores and display it as a header
+const score = document.createElement("h3");
+div.appendChild(score);
+
+const gameText = document.createElement("p");
+div.appendChild(gameText);
+
+const winnerText = document.createElement("p");
+div.appendChild(winnerText);
+
 /*Javascript for the Rock Paper Scissors game*/
 let humanScore = 0;
 let computerScore = 0;
+
 
 function getComputerChoice(){
     let rand = Math.random();
@@ -16,56 +63,46 @@ function getComputerChoice(){
     return choice;
 }
 
-function getHumanChoice(){
-    //Prevents any casing issues such as a user entering Rock or ROcK
-    let userInput = prompt("Please enter either paper, scissors or rock").toLowerCase();
-    //Use a loop that will always happen once, to allow the if statement to be boken out of when the user inputs a correct value (rock, paper or scissors)
-    for(let i = 0; i <= 1; i++){
-    if(userInput != "rock" && userInput != "scissors" && userInput != "paper"){
-        let newInput = prompt("You entered something that wasn't rock, paper or scissors. Please try again!");
-        if(newInput === "rock" || newInput === "scissors" || newInput === "paper"){
-            userInput = newInput;
-            break;
-        }
-    } 
-}
-return userInput;
-}
-
 function playRound(humanChoice, computerChoice){
-  if(humanChoice === "rock" && computerChoice ==="scissors"){
-    humanScore++;
-    return humanChoice + " beats " + computerChoice + ". You win!";
-  } else if(humanChoice === "paper" && computerChoice === "rock"){
-    humanScore++;
-    return humanChoice + " beats " + computerChoice + ". You win!";
-  } else if(humanChoice === "scissors" && computerChoice === "paper"){
-    humanScore++;
-    return humanChoice + " beats " + computerChoice + ". You win!";
-  } else if(humanChoice === computerChoice){
-    return "It's a tie!";
-  } else{
-    computerScore++;
-    return computerChoice + " beats " + humanChoice + ". You lose";
+  //Resets the winning text if the player has played the game already.
+  if(winnerText != ""){
+    winnerText.textContent = "";
   }
-}
 
-function playGame(){
-    humanScore = 0;
-    computerScore = 0;
-
-    for(let i = 1; i <= 5; i++){
-        console.log(playRound(getHumanChoice(), getComputerChoice()));
-        console.log("Computers score is: " + computerScore + ", your score is: " + humanScore);
-    }   
-
-    if(humanScore > computerScore){
-        console.log("Congratulations, you have won the game!");
-    } else if( humanScore === computerScore){
-        console.log("This game was a tie!");
-    } else {
-        console.log("Unlucky, you lost the game");
+  if(humanScore < 5 || computerScore < 5){
+    if(humanChoice === "rock" && computerChoice ==="scissors"){
+      humanScore++;
+      gameText.textContent = humanChoice + " beats " + computerChoice + ". You win!";
+    } else if(humanChoice === "paper" && computerChoice === "rock"){
+      humanScore++;
+      gameText.textContent = humanChoice + " beats " + computerChoice + ". You win!";
+    } else if(humanChoice === "scissors" && computerChoice === "paper"){
+      humanScore++;
+      gameText.textContent = humanChoice + " beats " + computerChoice + ". You win!";
+    } else if(humanChoice === computerChoice){
+      gameText.textContent = "It's a tie!";
+    } else{
+      computerScore++;
+      gameText.textContent = computerChoice + " beats " + humanChoice + ". You lose";
     }
+  }
+
+   // Check if the game is over
+   if (humanScore === 5 || computerScore === 5) {
+    gameOver(humanScore, computerScore);
+  }
+
+//I put the score down here so it'd trigger after each click
+score.textContent = "Player Score: " + humanScore + " vs Computer Score: " + computerScore;
 }
 
-playGame();
+function gameOver(playerSc, computerSc){
+  if(playerSc === 5){
+    winnerText.textContent = "Congratulations, you have won!";
+  } else{
+    winnerText.textContent = "Unlucky, better luck next time";
+  }
+  humanScore = 0;
+  computerScore = 0;
+}
+
